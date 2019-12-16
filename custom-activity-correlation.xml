@@ -1,0 +1,83 @@
+<activities>
+	
+	<producer activity-type="SimpleChannelPool" in-process="true">
+        <instrumentation>
+            <class-name>io.netty.channel.pool.SimpleChannelPool</class-name>
+            <method-name>acquireHealthyFromPoolOrNew</method-name>
+            <match-type>MATCHES_CLASS</match-type>
+        </instrumentation>
+        <correlation>
+              <payload-pointer>
+                <data-gatherer-type>POSITION</data-gatherer-type>
+                <transformer-type>GETTER_METHODS</transformer-type>
+                <position>0</position>
+                <getter-chain>this</getter-chain>
+            </payload-pointer>
+        </correlation>
+    </producer>
+	
+	<!--IMPORTANT DO NOT REMOVE-->
+	<consumer activity-type="SimpleChannelPool" in-process="true">
+        <instrumentation>
+            <class-name>io.netty.channel.pool.SimpleChannelPool</class-name>
+            <method-name>notifyConnect</method-name>
+            <match-type>MATCHES_CLASS</match-type>
+        </instrumentation>
+        <correlation>
+              <payload-pointer>
+                <data-gatherer-type>POSITION</data-gatherer-type>
+                <transformer-type>GETTER_METHODS</transformer-type>
+                <position>1</position>
+                <getter-chain>this</getter-chain>
+            </payload-pointer>
+        </correlation>
+    </consumer>
+
+	<!--IMPORTANT DO NOT REMOVE-->
+	<consumer activity-type="SimpleChannelPool" in-process="true">
+        <instrumentation>
+            <class-name>io.netty.channel.pool.SimpleChannelPool</class-name>
+            <method-name>doHealthCheck</method-name>
+            <match-type>MATCHES_CLASS</match-type>
+        </instrumentation>
+        <correlation>
+              <payload-pointer>
+                <data-gatherer-type>POSITION</data-gatherer-type>
+                <transformer-type>GETTER_METHODS</transformer-type>
+                <position>0</position>
+                <getter-chain>this</getter-chain>
+            </payload-pointer>
+        </correlation>
+    </consumer>
+	
+    <producer activity-type="Thread Fork" in-process="true">
+        <instrumentation>
+            <class-name>java.util.concurrent.Executor</class-name>
+            <method-name>execute</method-name>
+            <match-type>INHERITS_FROM_CLASS</match-type>
+        </instrumentation>
+        <correlation>
+              <payload-pointer>
+                <data-gatherer-type>POSITION</data-gatherer-type>
+                <transformer-type>GETTER_METHODS</transformer-type>
+                <position>0</position>
+                <getter-chain>this</getter-chain>
+            </payload-pointer>
+        </correlation>
+    </producer>
+    <consumer in-process="true" identify-transaction="true">
+        <instrumentation>
+            <class-name>java.lang.Thread</class-name>
+            <method-name>run</method-name>
+            <match-type>INHERITS_FROM_CLASS</match-type>
+        </instrumentation>
+        <correlation>
+            <payload-pointer>
+                <data-gatherer-type>INVOKED</data-gatherer-type>
+                <getter-chain>this</getter-chain>
+                <transformer-type>GETTER_METHODS</transformer-type>
+            </payload-pointer>
+        </correlation>
+    </consumer>
+
+</activities>
